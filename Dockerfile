@@ -1,15 +1,6 @@
-#
-# Build stage
-#
-FROM maven:3.6.0-jdk-11-slim AS build
-COPY src /exam/src
-COPY pom.xml /exam
-RUN mvn -f /exam/pom.xml clean package
+FROM tomcat:alpine
+MAINTAINER DevOps Team
+RUN wget -O /usr/local/tomcat/webapps/launchstation04.jar http://localhost:8081/artifactory/ashwani01_assignment/com/nagarro/nagp/exam/0.0.1-SNAPSHOT/exam-0.0.1-20200204.075553-1.jar
 
-#
-# Package stage
-#
-FROM openjdk:11-jre-slim
-COPY --from=build /exam/target/exam-0.0.1-SNAPSHOT.jar /usr/local/lib/exam.jar
-EXPOSE 8088
-ENTRYPOINT ["java","-jar","/usr/local/lib/exam.jar"]
+EXPOSE 8080
+CMD /usr/local/tomcat/bin/catalina.sh run
